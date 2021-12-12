@@ -1,12 +1,15 @@
 import {Router} from 'https://deno.land/x/oak/mod.ts';
 import {CardsService} from "./cards.service.ts";
 import {Card} from "./card.ts";
+import {StatesService} from "./states.service.ts";
+import {State} from "./state.ts";
 
 async function getFile(path: string) {
     return await Deno.readFile(path);
 }
 
 const cardsService = new CardsService();
+const statesService = new StatesService();
 
 const router = new Router();
 
@@ -37,8 +40,27 @@ router.put('/cards', async ctx => {
 });
 router.delete('/cards/:id', ctx => {
     const id: string = ctx.params.id!;
-    console.log("AAAAAAAAAAAAAAAAAaa");
     cardsService.deleteCard(id);
+    ctx.response.body = "";
+});
+
+router.get('/states', ctx => {
+    ctx.response.headers.set('Content-Type', 'application/json');
+    ctx.response.body = statesService.getStates();
+});
+router.post('/states', async ctx => {
+    ctx.response.headers.set('Content-Type', 'application/json');
+    const state: State = await ctx.request.body({type: 'json'}).value;
+    ctx.response.body = JSON.stringify(statesService.createState(state));
+});
+router.put('/states', async ctx => {
+    ctx.response.headers.set('Content-Type', 'application/json');
+    const state: State = await ctx.request.body({type: 'json'}).value;
+    ctx.response.body = statesService.updateState(state);
+});
+router.delete('/states/:id', ctx => {
+    const id: string = ctx.params.id!;
+    statesService.deleteState(id);
     ctx.response.body = "";
 });
 

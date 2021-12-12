@@ -24,11 +24,8 @@ export class CardsService {
 
     deleteCard(id: string) {
         const index = this.db.findIndex(c => c.id === id);
-        console.log(index);
         if (index > -1) {
-            console.log('A')
             this.db = this.db.splice(index, 1);
-            console.log(this.db)
         }
     }
 }
