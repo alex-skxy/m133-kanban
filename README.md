@@ -2,8 +2,7 @@
 
 Kanban board group project for m133
 
-frontend gemacht von Silvan (Sili-Dev, SharEduc)
-backend gemacht von Alex (alex-skxy)
+gemacht von Silvan (Sili-Dev, SharEduc) und Alex (alex-skxy)
 
 ## running
 
