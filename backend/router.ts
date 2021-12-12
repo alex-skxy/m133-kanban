@@ -30,12 +30,12 @@ router.get('/cards', ctx => {
 });
 router.post('/cards', async ctx => {
     ctx.response.headers.set('Content-Type', 'application/json');
-    const card: Card = await ctx.request.body({type: 'json'}).value;
+    const card: Card = JSON.parse(await ctx.request.body().value);
     ctx.response.body = JSON.stringify(cardsService.createCard(card));
 });
 router.put('/cards', async ctx => {
     ctx.response.headers.set('Content-Type', 'application/json');
-    const card: Card = await ctx.request.body({type: 'json'}).value;
+    const card: Card = JSON.parse(await ctx.request.body().value);
     ctx.response.body = cardsService.updateCard(card);
 });
 router.delete('/cards/:id', ctx => {
@@ -50,12 +50,12 @@ router.get('/states', ctx => {
 });
 router.post('/states', async ctx => {
     ctx.response.headers.set('Content-Type', 'application/json');
-    const state: State = await ctx.request.body({type: 'json'}).value;
+    const state: State = JSON.parse(await ctx.request.body().value);
     ctx.response.body = JSON.stringify(statesService.createState(state));
 });
 router.put('/states', async ctx => {
     ctx.response.headers.set('Content-Type', 'application/json');
-    const state: State = await ctx.request.body({type: 'json'}).value;
+    const state: State = JSON.parse(await ctx.request.body().value);
     ctx.response.body = statesService.updateState(state);
 });
 router.delete('/states/:id', ctx => {

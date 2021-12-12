@@ -12,7 +12,8 @@ export class StatesService {
 
     createState(state: State): State {
         state["id"] = Date.now().toString();
-        return this.db[this.db.push(state)];
+        this.db.push(state);
+        return state;
     }
 
     updateState(state: State): State | null {
@@ -28,7 +29,7 @@ export class StatesService {
     deleteState(id: string) {
         const index = this.db.findIndex(c => c.id === id);
         if (index > -1) {
-            this.db = this.db.splice(index, 1);
+            this.db.splice(index, 1);
         }
     }
 }

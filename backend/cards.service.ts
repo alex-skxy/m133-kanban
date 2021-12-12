@@ -9,7 +9,8 @@ export class CardsService {
 
     createCard(card: Card): Card {
         card["id"] = Date.now().toString();
-        return this.db[this.db.push(card)];
+        this.db.push(card);
+        return card;
     }
 
     updateCard(card: Card): Card | null {
@@ -25,7 +26,7 @@ export class CardsService {
     deleteCard(id: string) {
         const index = this.db.findIndex(c => c.id === id);
         if (index > -1) {
-            this.db = this.db.splice(index, 1);
+            this.db.splice(index, 1);
         }
     }
 }

@@ -3,43 +3,46 @@ const CARDS_API_URL = 'http://localhost:8080/cards';
 const STATES_API_URL = 'http://localhost:8080/states';
 
 const cardsService = {
-    get: async () => await fetch(CARDS_API_URL),
-    create: async task => await fetch(CARDS_API_URL, {
+    get: async () => await (await fetch(CARDS_API_URL)).json(),
+    create: async task => await (await fetch(CARDS_API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(task)
-    }),
-    update: async task => await fetch(CARDS_API_URL, {
+    })).json(),
+    update: async task => await (await fetch(CARDS_API_URL, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(task)
-    }),
+    })).json(),
     delete: async id => await fetch(`${CARDS_API_URL}/${id}`, {method: 'DELETE'})
 };
 
 const statesService = {
-    get: async () => await fetch(STATES_API_URL),
-    create: async state => await fetch(STATES_API_URL, {
+    get: async () => await (await fetch(STATES_API_URL)).json(),
+    create: async state => await (await fetch(STATES_API_URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(state)
-    }),
-    update: async state => await fetch(STATES_API_URL, {
+    })).json(),
+    update: async state => await (await fetch(STATES_API_URL, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(state)
-    }),
+    })).json(),
     delete: async id => await fetch(`${STATES_API_URL}/${id}`, {method: 'DELETE'})
 };
 
+
+let states;
+let tasks;
 
 class task {
     constructor(text, state) {
@@ -56,15 +59,24 @@ class state {
     }
 }
 
-let STATES = [
-    new state("To Do", 1),
-    new state("In Progress", 2),
-    new state("Done", 3)
-];
+async function addState() {
+    let name;
+    while (!name) {
+        name = prompt("Statename");
+    }
+    const newState = new state(name, states.length + 1);
+    await statesService.create(JSON.stringify(newState));
+    await renderBoard();
+}
 
-let tasks = [];
-
-renderBoard();
+async function OpenAddDialog(column) {
+    let name;
+    while (!name) {
+        name = prompt("Task Name");
+    }
+    await cardsService.create(JSON.stringify({id: "", text: name, state: column}));
+    await renderAllTasks();
+}
 
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
@@ -77,55 +89,31 @@ function allowDrop(ev) {
 function drop(ev) {
     ev.preventDefault();
     const data = ev.dataTransfer.getData("text");
-    tasks.forEach((taskItem) => {
+    tasks.forEach(async (taskItem) => {
         if (data == taskItem.id) {
             taskItem.state = ev.currentTarget.id;
+            await cardsService.update(JSON.stringify(taskItem));
+            await renderAllTasks();
         }
     });
-    renderAllTasks();
 }
 
-function OpenAddDialog(column) {
-    let name;
-    while (!name) {
-        name = prompt("Task Name");
-    }
-    tasks.push(new task(name, column));
-    renderAllTasks();
+
+async function removeTask(id) {
+    await cardsService.delete(id);
+    await renderAllTasks();
 }
 
-function removeTask(id) {
-    let i = 0;
-    tasks.forEach((task) => {
-        if (task.id == id) {
-            tasks.splice(i, 1);
-        }
-        i++;
-    });
-    renderAllTasks();
+async function removeState(id) {
+    await statesService.delete(id);
+    await renderBoard();
 }
 
-function removeState(id) {
-    let i = 0;
-    STATES.forEach((state) => {
-        if (state.id == id) {
-            STATES.splice(i, 1);
-        }
-        i++;
-    });
-    tasks.forEach((task) => {
-        let i = 0;
-        if (task.state == id) {
-            tasks.splice(i, 1);
-        }
-        i++;
-    })
-    renderBoard();
-}
+async function renderAllTasks() {
+    tasks = await cardsService.get();
+    states = await statesService.get();
 
-function renderAllTasks() {
-
-    STATES.forEach((state) => {
+    states.forEach((state) => {
         const element = document.getElementById(state.id + "-items");
         element.innerHTML = "";
     });
@@ -140,22 +128,13 @@ function renderAllTasks() {
     });
 }
 
-function addState() {
-    let name;
-    while (!name) {
-        name = prompt("Statename");
-    }
-    const newState = new state(name, STATES.length + 1);
-    STATES.push(newState);
-    renderBoard();
-    renderAllTasks();
-}
 
-function renderBoard() {
+async function renderBoard() {
+    states = await statesService.get();
     const board = document.getElementById("kanban-board");
     board.innerHTML = "";
 
-    STATES.forEach((state) => {
+    states.forEach((state) => {
         board.innerHTML +=
             `<div class="kanban-block w-1/4 h-screen m-4 text-center rounded overflow-hidden shadow-lg" id="${state.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2 class="text-4xl m-4">${state.name}</h2>
@@ -164,5 +143,11 @@ function renderBoard() {
             <input class="w-2/5 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full" type="button" value="DELETE" onclick="removeState(${state.id})" />
         </div>`
     });
-    renderAllTasks();
+    await renderAllTasks();
 }
+
+(async () => {
+    states = await statesService.get();
+    tasks = await cardsService.get();
+    await renderBoard();
+})();
