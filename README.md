@@ -4,7 +4,7 @@ Kanban board group project for m133
 
 ## running
 
-`(todo)`
+`deno run --allow-net --allow-read backend/server.ts`
 
 ## api
 
