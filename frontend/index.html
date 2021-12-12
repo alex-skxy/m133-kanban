@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="./style.css">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <title>Kanban Board</title>
 </head>
 <body>
-    <div class="container">
-        <div class="kanban-heading">
-            <h1 class="kanban-heading-text">Kanban Board</h1>
-            <input type="button" value="Add State" onclick="addState()" />
+    <div class="container w-full text-center">
+        <div class="kanban-heading items-center">
+            <h1 class="kanban-heading-text text-7xl m-10">Kanban Board</h1>
+            <input class="w-1/5 bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-2 px-4 rounded-full" type="button" value="Add State" onclick="addState()" />
         </div>
-        <div id="kanban-board">
+        <div class="flex items-center w-full" id="kanban-board">
         </div>
     </div>
 </body>

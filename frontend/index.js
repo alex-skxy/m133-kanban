@@ -45,7 +45,10 @@ function drop(ev) {
 }
 
 function OpenAddDialog(column) {
-    let name = prompt("LUL");
+    let name;
+    while (!name) {
+        name = prompt("Task Name");
+    }
     tasks.push(new task(name, column));
     renderAllTasks();
 }
@@ -61,6 +64,24 @@ function removeTask(id) {
     renderAllTasks();
 }
 
+function removeState(id) {
+    let i = 0;
+    STATES.forEach((state) => {
+        if (state.id == id) {
+            STATES.splice(i, 1);
+        }
+        i++;
+    });
+    tasks.forEach((task) => {
+        let i = 0;
+        if (task.state == id) {
+            tasks.splice(i, 1);
+        }
+        i++;
+    })
+    renderBoard();
+}
+
 function renderAllTasks() {
 
     STATES.forEach((state) => {
@@ -70,12 +91,20 @@ function renderAllTasks() {
 
     tasks.forEach(task => {
         const element = document.getElementById(task.state + "-items");
-        element.innerHTML += `<div class="task" id=${task.id} draggable="true" ondragstart="drag(event)">${task.text}<input type="button" value="-" onclick="removeTask(${task.id})" /></div>`;
+        element.innerHTML += `
+        <div class="task h-1/2 p-4 m-4 text-center rounded overflow-hidden shadow-lg" id=${task.id} draggable="true" ondragstart="drag(event)">
+            <h1 class="text-3xl">${task.text}</h1><br>
+            <input class="w-2/5 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full" type="button" value="DELETE" onclick="removeTask(${task.id})" />
+        </div>`;
     });
 }
 
 function addState() {
-    const newState = new state(prompt("Statename"), STATES.length+1);
+    let name;
+    while (!name) {
+        name = prompt("Statename");
+    }
+    const newState = new state(name, STATES.length+1);
     STATES.push(newState);
     renderBoard();
     renderAllTasks();
@@ -87,10 +116,11 @@ function renderBoard() {
 
     STATES.forEach((state) => {
         board.innerHTML += 
-        `<div class="kanban-block" id="${state.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>${state.name}</h2>
+        `<div class="kanban-block w-1/4 h-screen m-4 text-center rounded overflow-hidden shadow-lg" id="${state.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2 class="text-4xl m-4">${state.name}</h2>
             <div id="${state.id}-items"></div>
-            <button onclick="OpenAddDialog(${state.id})">ADD</button>
+            <button class="w-2/5 bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-2 px-4 rounded-full" onclick="OpenAddDialog(${state.id})">ADD</button>
+            <input class="w-2/5 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full vertical-align: bottom;" type="button" value="DELETE" onclick="removeState(${state.id})" />
         </div>`
     });
 }
