@@ -1,4 +1,45 @@
 "use strict";
+const CARDS_API_URL = 'http://localhost:8080/cards';
+const STATES_API_URL = 'http://localhost:8080/states';
+
+const cardsService = {
+    get: async () => await fetch(CARDS_API_URL),
+    create: async task => await fetch(CARDS_API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(task)
+    }),
+    update: async task => await fetch(CARDS_API_URL, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(task)
+    }),
+    delete: async id => await fetch(`${CARDS_API_URL}/${id}`, {method: 'DELETE'})
+};
+
+const statesService = {
+    get: async () => await fetch(STATES_API_URL),
+    create: async state => await fetch(STATES_API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(state)
+    }),
+    update: async state => await fetch(STATES_API_URL, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(state)
+    }),
+    delete: async id => await fetch(`${STATES_API_URL}/${id}`, {method: 'DELETE'})
+};
+
 
 class task {
     constructor(text, state) {
@@ -104,7 +145,7 @@ function addState() {
     while (!name) {
         name = prompt("Statename");
     }
-    const newState = new state(name, STATES.length+1);
+    const newState = new state(name, STATES.length + 1);
     STATES.push(newState);
     renderBoard();
     renderAllTasks();
@@ -115,8 +156,8 @@ function renderBoard() {
     board.innerHTML = "";
 
     STATES.forEach((state) => {
-        board.innerHTML += 
-        `<div class="kanban-block w-1/4 h-screen m-4 text-center rounded overflow-hidden shadow-lg" id="${state.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
+        board.innerHTML +=
+            `<div class="kanban-block w-1/4 h-screen m-4 text-center rounded overflow-hidden shadow-lg" id="${state.id}" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2 class="text-4xl m-4">${state.name}</h2>
             <div id="${state.id}-items"></div>
             <button class="w-2/5 bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-2 px-4 rounded-full" onclick="OpenAddDialog(${state.id})">ADD</button>
