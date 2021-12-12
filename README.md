@@ -8,6 +8,8 @@ gemacht von Silvan (Sili-Dev, SharEduc) und Alex (alex-skxy)
 
 `deno run --allow-net --allow-read backend/server.ts`
 
+accessable: `localhost:8080`
+
 ## additional functionality
 
  - editable states (columns)
