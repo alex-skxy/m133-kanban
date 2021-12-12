@@ -106,6 +106,15 @@ async function removeTask(id) {
 
 async function removeState(id) {
     await statesService.delete(id);
+
+    let i = 0;
+    tasks.forEach(async (task) => {
+        if (task.state == id) {
+            await cardsService.delete(task.id);
+        }
+        i++;
+    });
+
     await renderBoard();
 }
 
