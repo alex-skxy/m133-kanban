@@ -1,8 +1,10 @@
-import {Card} from "./card.ts";
 import {State} from "./state.ts";
 
 export class StatesService {
-    db: State[] = [];
+    db: State[] = [{id: "1", name: "To Do"},
+        {id: "2", name: "In Progress"},
+        {id: "3", name: "Done"}
+    ];
 
     getStates(): State[] {
         return this.db;
