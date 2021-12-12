@@ -120,7 +120,8 @@ function renderBoard() {
             <h2 class="text-4xl m-4">${state.name}</h2>
             <div id="${state.id}-items"></div>
             <button class="w-2/5 bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-2 px-4 rounded-full" onclick="OpenAddDialog(${state.id})">ADD</button>
-            <input class="w-2/5 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full vertical-align: bottom;" type="button" value="DELETE" onclick="removeState(${state.id})" />
+            <input class="w-2/5 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full" type="button" value="DELETE" onclick="removeState(${state.id})" />
         </div>`
     });
+    renderAllTasks();
 }
